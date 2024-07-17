@@ -22,9 +22,8 @@ repositories {
     // maven { url 'https://maven.aliyun.com/repository/public' } // 不许用，不然满江红
     if (!System.getenv().containsKey("CI")) {
         maven(url = "https://mirrors.tencent.com/nexus/repository/maven-public/")
-        maven(url = "https://download.jetbrains.8686c.com/idea/") // ideaIC download
     }
-    maven(url = "https://developer.huawei.com/repo/")
+    maven(url = "https://download.jetbrains.8686c.com/idea/") // ideaIC download
     google()
     mavenCentral()
     maven(url = "https://jitpack.io")
