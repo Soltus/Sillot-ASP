@@ -1,3 +1,8 @@
+# 此文件需要在主分支存在，否则即使 TOKEN 有 workflows permission 也会报错（自己琢磨出来的）
+# refusing to allow a GitHub App to create or update workflow .github/workflows/XXXX.yml without workflows permission
+# -------------------------------------------------------------------
+# https://github.com/Soltus
+
 name: 'Upstream Sync'
 
 on:
