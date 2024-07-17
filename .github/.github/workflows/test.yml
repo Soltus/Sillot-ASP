@@ -58,7 +58,7 @@ jobs:
         target_repo_token: ${{ secrets.MY_GH_TOKEN_W }} # 可能涉及 workflows 的修改，需要对应权限
         upstream_sync_branch: ${{ env.upstream_sync_branch }}
         upstream_sync_repo: ${{ env.upstream_sync_repo }}
-        upstream_repo_access_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_repo_access_token: ${{ secrets.MY_GH_TOKEN_W }} # 可能涉及 workflows 的修改，需要对应权限
 
         # Set test_mode true during manual dispatch to run tests instead of the true action!!
         test_mode: ${{ inputs.sync_test_mode }}
