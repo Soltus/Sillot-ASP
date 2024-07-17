@@ -34,7 +34,7 @@ jobs:
           force: true
           # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 需要在仓库设置的 Workflow permissions 允许写入权限
 
       # - name: Create Pull Request
       #   if: steps.push_changes.outputs.pushed == 'true'
