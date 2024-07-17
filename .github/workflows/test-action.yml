@@ -36,7 +36,7 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           mv /tmp/${{ env.dist_path }}/* .
           git add .
-          git commit -m "[bot] Merge changes from main into ${{ env.dist_branch }}" || echo "No changes to commit"
+          git commit -m "[bot] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
 
       - name: Push changes
         id: push_changes
