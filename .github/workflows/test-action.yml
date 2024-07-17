@@ -58,5 +58,5 @@ jobs:
           force: true
           # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
-          github_token: ${{ secrets.SOLTUS_TOKEN }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
+          github_token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
 
