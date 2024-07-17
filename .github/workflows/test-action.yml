@@ -33,7 +33,7 @@ jobs:
       - name: Merge changes from main into dist_branch
         run: |
           git checkout main
-          cp -r ${{ env.dist_path }} /tmp/
+          cp -r ./${{ env.dist_path }} /tmp/
           git checkout ${{ env.dist_branch }}
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           mv /tmp/${{ env.dist_path }}/* .
