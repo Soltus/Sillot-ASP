@@ -46,6 +46,7 @@ jobs:
           # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
           # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
           # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
+          ls -la
           git add .
           git commit -m "[bot] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
 
