@@ -28,7 +28,7 @@ jobs:
           git checkout main
           cp -r .github /tmp/
           git checkout new-branch
-          rm -rf .
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           mv /tmp/.github/* .
           git add .
           git commit -m "Merge changes from main into new-branch" || echo "No changes to commit"
