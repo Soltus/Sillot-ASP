@@ -22,7 +22,7 @@ on:
         default: false
 
 env:
-    target_sync_branch: "mian"
+    target_sync_branch: "main"
     upstream_sync_repo: "Soltus/Sillot-ASP"
     upstream_sync_branch: "main_-_dist_-_test"
 
