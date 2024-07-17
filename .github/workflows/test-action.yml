@@ -48,7 +48,7 @@ jobs:
           # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
           ls -la
           git add .
-          git commit -m "[bot] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
+          git commit -m "[bot][skip actions] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
 
       - name: Push changes
         id: push_changes
@@ -58,5 +58,5 @@ jobs:
           force: true
           # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
-          GITHUB_TOKEN: ${{ secrets.SOLTUS_TOKEN }} # 使用具有完全写入权限的 TOKEN
+          GITHUB_TOKEN: ${{ secrets.SOLTUS_TOKEN }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
 
