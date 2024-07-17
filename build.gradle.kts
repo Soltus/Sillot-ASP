@@ -18,12 +18,13 @@ version = properties("pluginVersion").get()
 
 // Configure project's dependencies
 repositories {
+    maven(url = "https://download.jetbrains.8686c.com/idea/") // ideaIC download
     maven(url = "https://maven.aliyun.com/repository/google")
     // maven { url 'https://maven.aliyun.com/repository/public' } // 不许用，不然满江红
-    if (!System.getenv().containsKey("CI")) {
-        maven(url = "https://mirrors.tencent.com/nexus/repository/maven-public/")
-    }
-    maven(url = "https://download.jetbrains.8686c.com/idea/") // ideaIC download
+    // if 判断失效，以后再研究
+//    if (!System.getenv().containsKey("CI")) {
+//        maven(url = "https://mirrors.tencent.com/nexus/repository/maven-public/")
+//    }
     google()
     mavenCentral()
     maven(url = "https://jitpack.io")
