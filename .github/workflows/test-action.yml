@@ -5,6 +5,10 @@ on:
     branches:
       - main  # 触发的分支
 
+# ref https://docs.github.com/zh/actions/learn-github-actions/variables
+env:
+  dist_path: ".github"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,13 +27,13 @@ jobs:
         run: |
           git checkout new-branch || git checkout -b new-branch
 
-      - name: Merge .github changes from main into new-branch
+      - name: Merge changes from main into new-branch
         run: |
           git checkout main
-          cp -r .github /tmp/
+          cp -r ${{ env.dist_path }} /tmp/
           git checkout new-branch
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          mv /tmp/.github/* .
+          mv /tmp/${{ env.dist_path }}/* .
           git add .
           git commit -m "Merge changes from main into new-branch" || echo "No changes to commit"
 
