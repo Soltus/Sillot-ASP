@@ -45,6 +45,7 @@ jobs:
         # optional: set the branch to checkout,
         # sync action checks out your 'target_sync_branch' anyway
         ref:  ${{ env.target_sync_branch }}
+        token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
         # REQUIRED if your upstream repo is private (see wiki)
         persist-credentials: false
 

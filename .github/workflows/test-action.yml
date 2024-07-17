@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # 确保可以获取所有历史记录，以便合并
+          token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
 
       - name: Set up Git
         run: |
