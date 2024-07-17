@@ -1,0 +1,42 @@
+name: Create and Sync Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to sync from upstream'
+        required: true
+        default: 'main' # 默认为'main'，但可以根据需要更改
+
+jobs:
+  create-and-sync-branch:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # 初始化一个空的仓库，因为main分支不存在
+        ref: 'refs/heads/${{ github.event.inputs.branch }}' # 指定要创建的分支
+        fetch-depth: 0
+
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+    - name: Create branch if it does not exist
+      run: |
+        if [ ! $(git show-ref --verify --quiet "refs/heads/${{ github.event.inputs.branch }}") ]; then
+          git checkout -b ${{ github.event.inputs.branch }}
+          git push origin ${{ github.event.inputs.branch }}
+        fi
+    - name: Fetch upstream
+      run: git fetch upstream
+
+    - name: Merge upstream/${{ github.event.inputs.branch }} into main
+      run: git merge upstream/${{ github.event.inputs.branch }} --allow-unrelated-histories
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
