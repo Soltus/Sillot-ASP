@@ -43,7 +43,6 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ env.dist_branch }}
-          # directory: path/to/directory  # 不需要，因为我们直接在分支的根目录下操作
           force: true
           # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
