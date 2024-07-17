@@ -18,6 +18,7 @@ jobs:
           git config --global user.email 'actions@github.com'
 
       - name: Copy directory to new branch
+        # cp -r .github/* path/to/directory/ 举例来说，.github/release.yml -> path/to/directory/workflows/release.yml 不会包含 .github 需要注意
         run: |
           mkdir -p path/to/directory
           cp -r .github/* path/to/directory/
@@ -31,6 +32,7 @@ jobs:
           branch: new-branch
           directory: path/to/directory
           force: true
+          # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
