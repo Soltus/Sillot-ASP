@@ -1,10 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.soltus.sillotasp</id>
-    <name>Sillot-ASP</name>
-    <vendor>soltus</vendor>
+    <name>汐洛 Sillot</name>
+    <vendor>Hi-Windom</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.android</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
