@@ -20,7 +20,7 @@ jobs:
       - name: Copy directory to new branch
         run: |
           mkdir -p path/to/directory
-          cp -r path/to/source-directory/* path/to/directory/
+          cp -r .github/* path/to/directory/
           git add path/to/directory/
           git commit -m "Update files from directory" || echo "No changes to commit"
 
