@@ -1,0 +1,44 @@
+name: Test Push Directory to Branch with PR
+
+on:
+  push:
+    branches:
+      - main  # 触发的分支
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Copy directory to new branch
+        run: |
+          mkdir -p path/to/directory
+          cp -r path/to/source-directory/* path/to/directory/
+          git add path/to/directory/
+          git commit -m "Update files from directory" || echo "No changes to commit"
+
+      - name: Push changes
+        id: push_changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: new-branch
+          directory: path/to/directory
+          force: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Create Pull Request
+      #   if: steps.push_changes.outputs.pushed == 'true'
+      #   uses: peter-evans/create-pull-request@v6
+      #   with:
+      #     title: 'Update files from directory'
+      #     commit-message: 'Update files from directory'
+      #     branch: 'new-branch'
+      #     base: 'target-branch'  # 替换为目标分支
