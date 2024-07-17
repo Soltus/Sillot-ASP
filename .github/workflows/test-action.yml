@@ -21,10 +21,10 @@ jobs:
         with:
           fetch-depth: 0  # 确保可以获取所有历史记录，以便合并
 
-      # - name: Set up Git
-      #   run: |
-      #     git config --global user.name 'GitHub Actions'
-      #     git config --global user.email 'actions@github.com'
+      - name: Set up Git
+        run: |
+          git config --global user.name 'Soltus'
+          git config --global user.email '694357845@qq.com'
 
       - name: Check out dist_branch or create it if it doesn't exist
         run: |
