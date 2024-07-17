@@ -34,9 +34,13 @@ jobs:
         run: |
           git checkout main
           cp -r ${{ env.dist_path }} /tmp/
+          ls -la /tmp/${{ env.dist_path }}
           git checkout ${{ env.dist_branch }}
+          ls -la
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          ls -la
           mv /tmp/${{ env.dist_path }}/* .
+          ls -la
           git add .
           git commit -m "[bot] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
 
