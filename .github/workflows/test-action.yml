@@ -8,7 +8,9 @@ on:
 # ref https://docs.github.com/zh/actions/learn-github-actions/variables
 env:
   dist_path: ".github"
-  dist_branch: "❄️_-_dist_-_test" # 不能包含 / 等字符
+  dist_branch: "main_-_dist_-_test" # 不能包含 / 等字符
+  # 有个小缺陷需要解决，fokr端（下游）创建分支时必须同名，否则只有创建时是复制的制定分支，后续目标会被强制改为上游默认分支
+  # 试试工作流 git branch —set-upstream-to
 
 jobs:
   build:
