@@ -8,7 +8,7 @@ on:
 # ref https://docs.github.com/zh/actions/learn-github-actions/variables
 env:
   dist_path: ".github"
-  dist_branch: "main/dist-test"
+  dist_branch: "main.dist-test" # 不能包含 / 字符
 
 jobs:
   build:
