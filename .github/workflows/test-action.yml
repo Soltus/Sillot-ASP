@@ -27,8 +27,8 @@ jobs:
           mv .github /tmp/
           # 删除所有文件和目录，除了 .git 目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          # 移回目录到根目录
-          mv /tmp/.github .
+          # 移回目录内容到根目录
+          mv /tmp/.github/* .
 
       - name: Add and commit changes
         run: |
