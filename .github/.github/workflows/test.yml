@@ -66,8 +66,11 @@ jobs:
           else
             echo "branch_exists=false" >> $GITHUB_OUTPUT
             echo "Remote branch ${{ env.target_sync_branch }} does not exist."
-            # 创建一个全新的分支，不基于任何现有的提交
+            # 创建一个全新的分支, 不基于任何现有的提交
             git checkout --orphan ${{ env.target_sync_branch }}
+            # 初始化一个新的空提交, 因为orphan分支开始时没有任何提交
+            git commit --allow-empty -m "Initial commit on orphan branch ${{ env.target_sync_branch }}"
+            # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
           fi
 
