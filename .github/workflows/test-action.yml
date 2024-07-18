@@ -91,10 +91,20 @@ jobs:
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.dist_branch }}
           # 移动所有非隐藏文件和目录
-          mv /tmp/${{ env.dist_path }}/* .
-          # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
+          # 使用条件判断来检查是否存在非隐藏文件和目录
+          if [ "$(ls -A /tmp/${{ env.dist_path }})" ]; then
+            mv /tmp/${{ env.dist_path }}/* .
+          else
+            echo "No non-hidden files or directories to move."
+          fi
           shopt -s dotglob nullglob
-          mv /tmp/${{ env.dist_path }}/.[!.]* ./
+          # 移动所有隐藏文件和目录，但排除 . 和 ..
+          # 同样使用条件判断来检查是否存在隐藏文件和目录
+          if [ "$(ls -A /tmp/${{ env.dist_path }}/.[!.]*)" ]; then
+            mv /tmp/${{ env.dist_path }}/.[!.]* .
+          else
+            echo "No hidden files or directories to move."
+          fi
           shopt -u dotglob nullglob
           # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
           # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
@@ -114,10 +124,20 @@ jobs:
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.cd_branch }}
           # 移动所有非隐藏文件和目录
-          mv /tmp/${{ env.cd_path }}/* .
-          # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
+          # 使用条件判断来检查是否存在非隐藏文件和目录
+          if [ "$(ls -A /tmp/${{ env.cd_path }})" ]; then
+            mv /tmp/${{ env.cd_path }}/* .
+          else
+            echo "No non-hidden files or directories to move."
+          fi
           shopt -s dotglob nullglob
-          mv /tmp/${{ env.cd_path }}/.[!.]* ./
+          # 移动所有隐藏文件和目录，但排除 . 和 ..
+          # 同样使用条件判断来检查是否存在隐藏文件和目录
+          if [ "$(ls -A /tmp/${{ env.cd_path }}/.[!.]*)" ]; then
+            mv /tmp/${{ env.cd_path }}/.[!.]* .
+          else
+            echo "No hidden files or directories to move."
+          fi
           shopt -u dotglob nullglob
           # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
           # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
