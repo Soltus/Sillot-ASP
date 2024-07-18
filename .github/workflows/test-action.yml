@@ -115,7 +115,7 @@ jobs:
           git add .
           git commit -m "[bot][skip actions] Initial ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}"
       - name: Push dist_branch
-        id: push_changes
+        id: push_dist_branch
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ env.dist_branch }}
@@ -124,7 +124,7 @@ jobs:
         env:
           github_token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
       - name: Push cd_branch
-        id: push_changes
+        id: push_cd_branch
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ env.cd_branch }}
