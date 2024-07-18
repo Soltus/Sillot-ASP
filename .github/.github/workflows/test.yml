@@ -74,9 +74,9 @@ jobs:
             git remote add upstream https://github.com/${{ env.upstream_sync_repo }}.git
             git fetch upstream ${{ env.upstream_sync_branch }}:${{ env.upstream_sync_branch }}
             git checkout -b temp_branch upstream/${{ env.upstream_sync_branch }}
-            git merge ${{ env.target_sync_branch }} # 将临时分支的内容合并到孤儿分支
             git add .
             git commit --allow-empty -m "Initial fetch on orphan branch ${{ env.target_sync_branch }}"
+            git merge ${{ env.target_sync_branch }} # 将临时分支的内容合并到孤儿分支
             # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
           fi
