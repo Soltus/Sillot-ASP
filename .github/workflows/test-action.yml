@@ -94,7 +94,7 @@ jobs:
           mv /tmp/${{ env.dist_path }}/* .
           # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
           shopt -s dotglob nullglob
-          mv /tmp/${{ env.dist_path }}/.[!.]* .
+          mv /tmp/${{ env.dist_path }}/.[!.]* ./
           shopt -u dotglob nullglob
           # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
           # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
@@ -117,7 +117,7 @@ jobs:
           mv /tmp/${{ env.cd_path }}/* .
           # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
           shopt -s dotglob nullglob
-          mv /tmp/${{ env.cd_path }}/.[!.]* .
+          mv /tmp/${{ env.cd_path }}/.[!.]* ./
           shopt -u dotglob nullglob
           # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
           # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
