@@ -125,7 +125,7 @@ jobs:
           git checkout --orphan ${{ env.cd_branch }}
           # 移动所有非隐藏文件和目录
           # 使用条件判断来检查是否存在非隐藏文件和目录
-          if [ "$(ls -A /tmp/${{ env.cd_path }})" ]; then
+          if [ "$(ls -A /tmp/${{ env.cd_path }})/*)" ]; then
             mv /tmp/${{ env.cd_path }}/* .
           else
             echo "No non-hidden files or directories to move."
