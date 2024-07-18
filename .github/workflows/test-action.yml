@@ -59,17 +59,17 @@ jobs:
           cp -r ${{ env.dist_path }} /tmp/
           # 清空所有文件，除了.git目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          # 创建一个全新的分支，不基于任何现有的提交
+          # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.dist_branch }}
           # 移动所有非隐藏文件和目录
           mv /tmp/${{ env.dist_path }}/* .
-          # 移动所有隐藏文件和目录（例如 .github 文件夹），但排除 . 和 ..
+          # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
           shopt -s dotglob nullglob
           mv /tmp/${{ env.dist_path }}/.[!.]* .
           shopt -u dotglob nullglob
-          # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
-          # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
-          # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
+          # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
+          # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
+          # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项, 以恢复默认行为。
           git add .
           git commit -m "[bot][skip actions] Initial ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}"
 
