@@ -52,17 +52,17 @@ jobs:
             echo "Remote branch ${{ env.cd_branch }} exists."
           else
             echo "branch_exists=false" >> $GITHUB_OUTPUT
-            echo "Remote branch ${{ env.dist_branch }} does not exist."
+            echo "Remote branch ${{ env.cd_branch }} does not exist."
           fi
       - name: Sync dist_path from main_branch to exists dist_branch
         if: steps.dist_branch-exists.outputs.branch_exists == 'true'
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.dist_path }} /tmp/
-          git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
+          cp -r ${{ env.dist_path }} /tmp/dist_branch/
+          ls -A /tmp/dist_branch/${{ env.dist_path }}/
           git checkout ${{ env.dist_branch }}
-          rsync -a --exclude '.git' /tmp/${{ env.dist_path }}/ ./
+          rsync -a --exclude '.git' /tmp/dist_branch/${{ env.dist_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
           # 删除临时分支
@@ -72,10 +72,10 @@ jobs:
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.cd_path }} /tmp/
-          git fetch origin ${{ env.cd_branch }}:${{ env.cd_branch }}
+          cp -r ${{ env.cd_path }} /tmp/cd_branch/
+          ls -A /tmp/cd_branch/${{ env.cd_path }}/
           git checkout ${{ env.cd_branch }}
-          rsync -a --exclude '.git' /tmp/${{ env.cd_path }}/ ./
+          rsync -a --exclude '.git' /tmp/cd_branch/${{ env.cd_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
           # 删除临时分支
