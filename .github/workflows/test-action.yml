@@ -66,7 +66,7 @@ jobs:
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
           # 删除临时分支
-          git branch -d temp_${{ env.main_branch }}
+          git branch -D temp_${{ env.main_branch }}
       - name: Sync cd_path from main_branch to exists cd_branch
         if: steps.cd_branch-exists.outputs.branch_exists == 'true'
         run: |
@@ -79,7 +79,7 @@ jobs:
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
           # 删除临时分支
-          git branch -d temp_${{ env.main_branch }}
+          git branch -D temp_${{ env.main_branch }}
       - name: Sync dist_path from main_branch to not exist dist_branch
         if: steps.dist_branch-exists.outputs.branch_exists == 'false'
         run: |
@@ -102,7 +102,7 @@ jobs:
           git add .
           git commit -m "[bot][skip actions] Initial ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}"
           # 删除临时分支
-          git branch -d temp_${{ env.main_branch }}
+          git branch -D temp_${{ env.main_branch }}
       - name: Sync cd_path from main_branch to not exist cd_branch
         if: steps.cd_branch-exists.outputs.branch_exists == 'false'
         run: |
@@ -125,7 +125,7 @@ jobs:
           git add .
           git commit -m "[bot][skip actions] Initial ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}"
           # 删除临时分支
-          git branch -d temp_${{ env.main_branch }}
+          git branch -D temp_${{ env.main_branch }}
       - name: Push dist_branch
         id: push_dist_branch
         uses: ad-m/github-push-action@master
