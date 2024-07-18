@@ -68,7 +68,7 @@ jobs:
           git checkout ${{ env.dist_branch }}
           rm -rf *
           rsync -a --exclude '.git' $HOME/tmp/ ./
-          ls -lAR .
+          find . -path './.git' -prune -o -exec ls -lR {} +
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
           # 删除临时分支
@@ -87,7 +87,7 @@ jobs:
           git checkout ${{ env.cd_branch }}
           rm -rf *
           rsync -a --exclude '.git' $HOME/tmp/ ./
-          ls -lAR .
+          find . -path './.git' -prune -o -exec ls -lR {} +
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
           # 删除临时分支
