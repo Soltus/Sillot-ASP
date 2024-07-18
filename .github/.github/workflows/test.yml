@@ -47,10 +47,18 @@ jobs:
       with:
         # optional: set the branch to checkout,
         # sync action checks out your 'target_sync_branch' anyway
-        ref:  ${{ env.target_sync_branch }}
+        # ref:  ${{ env.target_sync_branch }}
+        fetch-depth: 0
         token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
         # REQUIRED if your upstream repo is private (see wiki)
         persist-credentials: false
+
+    - name: Delete remote branch
+      run: |
+        git push origin --delete ${{ env.target_sync_branch }}
+      env:
+        GIT_COMMITTER_NAME: 'GitHub Actions'
+        GIT_COMMITTER_EMAIL: 'actions@github.com'
 
     # REQUIRED step
     # Step 2: run the sync action
