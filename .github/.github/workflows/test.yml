@@ -71,17 +71,18 @@ jobs:
             find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
             # 创建一个全新的分支, 不基于任何现有的提交
             git checkout --orphan ${{ env.target_sync_branch }}
+            git fetch upstream ${{ env.upstream_sync_branch }}:${{ env.target_sync_branch }}
             git add .
-            git commit --allow-empty -m "Initial commit on orphan branch ${{ env.target_sync_branch }}"
+            git commit --allow-empty -m "Initial fetch on orphan branch ${{ env.target_sync_branch }}"
             # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
-            git fetch --all
           fi
 
       # REQUIRED step
       # Step 2: run the sync action
       - name: Sync upstream changes
         id: sync
+        if: steps.check-branch-exists.outputs.branch_exists == 'true'
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
         with:
           target_sync_branch: ${{ env.target_sync_branch }}
