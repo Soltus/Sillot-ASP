@@ -90,17 +90,17 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.dist_branch }}
+          shopt -s dotglob nullglob
           # 移动所有非隐藏文件和目录
-          # 使用条件判断来检查是否存在非隐藏文件和目录
-          if [ "$(ls -A /tmp/${{ env.dist_path }})" ]; then
+          files=(/tmp/${{ env.dist_path }}/*)
+          if [ ${#files[@]} -gt 0 ]; then
             mv /tmp/${{ env.dist_path }}/* .
           else
             echo "No non-hidden files or directories to move."
           fi
-          shopt -s dotglob nullglob
           # 移动所有隐藏文件和目录，但排除 . 和 ..
-          # 同样使用条件判断来检查是否存在隐藏文件和目录
-          if [ "$(ls -A /tmp/${{ env.dist_path }}/.[!.]*)" ]; then
+          hidden_files=(/tmp/${{ env.dist_path }}/.[!.]*)
+          if [ ${#hidden_files[@]} -gt 0 ]; then
             mv /tmp/${{ env.dist_path }}/.[!.]* .
           else
             echo "No hidden files or directories to move."
@@ -123,17 +123,17 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.cd_branch }}
+          shopt -s dotglob nullglob
           # 移动所有非隐藏文件和目录
-          # 使用条件判断来检查是否存在非隐藏文件和目录
-          if [ "$(ls -A /tmp/${{ env.cd_path }})/*)" ]; then
+          files=(/tmp/${{ env.cd_path }}/*)
+          if [ ${#files[@]} -gt 0 ]; then
             mv /tmp/${{ env.cd_path }}/* .
           else
             echo "No non-hidden files or directories to move."
           fi
-          shopt -s dotglob nullglob
           # 移动所有隐藏文件和目录，但排除 . 和 ..
-          # 同样使用条件判断来检查是否存在隐藏文件和目录
-          if [ "$(ls -A /tmp/${{ env.cd_path }}/.[!.]*)" ]; then
+          hidden_files=(/tmp/${{ env.cd_path }}/.[!.]*)
+          if [ ${#hidden_files[@]} -gt 0 ]; then
             mv /tmp/${{ env.cd_path }}/.[!.]* .
           else
             echo "No hidden files or directories to move."
