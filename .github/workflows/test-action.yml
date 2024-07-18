@@ -63,8 +63,9 @@ jobs:
           mkdir -p $HOME/tmp
           # 清空临时文件夹的内容
           rm -rf $HOME/tmp/*
+          ls -A $HOME/tmp/
           rsync -a --exclude '.git' ${{ env.dist_path }}/ $HOME/tmp/
-          ls -lAR $HOME/tmp/
+          ls -A $HOME/tmp/
           git checkout ${{ env.dist_branch }}
           # 清空所有文件，除了.git目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
@@ -83,8 +84,9 @@ jobs:
           mkdir -p $HOME/tmp
           # 清空临时文件夹的内容
           rm -rf $HOME/tmp/*
+          ls -A $HOME/tmp/
           rsync -a --exclude '.git' ${{ env.cd_path }}/ $HOME/tmp/
-          ls -lAR $HOME/tmp/
+          ls -A $HOME/tmp/
           git checkout ${{ env.cd_branch }}
           # 清空所有文件，除了.git目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
