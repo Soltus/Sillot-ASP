@@ -11,9 +11,9 @@ on:
 
 # ref https://docs.github.com/zh/actions/learn-github-actions/variables
 env:
-  cd_path: "test/.github" # (Github）持续交付路径, 不能以 / 结尾
+  cd_path: "test/ci" # (Github）持续交付路径, 不能以 / 结尾
   cd_branch: "main_-_cd_-_test" # 不能包含 / 等字符
-  dist_path: "test" # 分发路径, 不能以 / 结尾
+  dist_path: "test/src" # 分发路径, 不能以 / 结尾
   dist_branch: "main_-_dist_-_test" # 不能包含 / 等字符
   main_branch: "main" # 当前仓库（上游）主分支
 
