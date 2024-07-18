@@ -1,3 +1,4 @@
+# 有个小缺陷需要解决，fokr端（下游）创建分支时必须同名，否则只有创建时是复制的制定分支，后续目标会被强制改为上游默认分支
 name: Test Push Directory to Branch with PR
 
 on:
@@ -9,8 +10,6 @@ on:
 env:
   dist_path: ".github"
   dist_branch: "main_-_dist_-_test" # 不能包含 / 等字符
-  # 有个小缺陷需要解决，fokr端（下游）创建分支时必须同名，否则只有创建时是复制的制定分支，后续目标会被强制改为上游默认分支
-  # 试试工作流 git branch —set-upstream-to
 
 jobs:
   build:
@@ -29,7 +28,7 @@ jobs:
 
       - name: Check out dist_branch or create it if it doesn't exist
         run: |
-          git checkout ${{ env.dist_branch }} || git checkout -b ${{ env.dist_branch }}
+          git checkout -b ${{ env.dist_branch }}
 
       - name: Merge changes from main into dist_branch
         run: |
