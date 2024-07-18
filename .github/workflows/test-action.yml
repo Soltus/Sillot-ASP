@@ -46,7 +46,7 @@ jobs:
           git checkout ${{ env.main_branch }}
           git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
-          rsync -a --exclude '.git' ${{ env.dist_path }}/ .
+          rsync -a --exclude '.git' ${{ env.dist_path }}/* .
           git add .
           git commit -m "[bot][skip actions] Sync dist_path from ${{ env.main_branch }} to${{ env.dist_branch }}" || echo "No changes to commit"
 
