@@ -34,8 +34,10 @@ jobs:
         run: |
           if git ls-remote --heads origin ${{ env.dist_branch }}; then
             echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.dist_branch }} exists."
           else
             echo "branch_exists=false" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.dist_branch }} does not exist."
           fi
 
       - name: Sync dist_path from main_branch to dist_branch if it exists
