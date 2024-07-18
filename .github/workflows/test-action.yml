@@ -1,15 +1,17 @@
 # 有个小缺陷需要解决，fokr端（下游）创建分支时必须同名，否则只有创建时是复制的制定分支，后续目标会被强制改为上游默认分支
 name: Test Push Directory to Branch with PR
 
+# 这里通过主分支的 push 触发，也可以自定义其他触发方式
 on:
   push:
     branches:
-      - main  # 触发的分支
+      - main
 
 # ref https://docs.github.com/zh/actions/learn-github-actions/variables
 env:
   dist_path: ".github"
   dist_branch: "main_-_dist_-_test" # 不能包含 / 等字符
+  main_branch: "main"
 
 jobs:
   build:
@@ -26,16 +28,16 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
-      - name: Check out dist_branch or create it if it doesn't exist
-        run: |
-          git checkout -b ${{ env.dist_branch }}
+      # - name: Check out dist_branch or create it if it doesn't exist
+      #   run: |
+      #     git checkout -b ${{ env.dist_branch }}
 
       - name: Merge changes from main into dist_branch
         run: |
-          git checkout main
+          git checkout ${{ env.main_branch }}
           cp -r ${{ env.dist_path }} /tmp/
           ls -la /tmp/${{ env.dist_path }}
-          git checkout ${{ env.dist_branch }}
+          git checkout -b ${{ env.dist_branch }}
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           # 移动所有非隐藏文件和目录
           mv /tmp/${{ env.dist_path }}/* .
