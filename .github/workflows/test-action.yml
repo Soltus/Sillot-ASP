@@ -2,7 +2,7 @@
 # 按照规范，发布分支应当仅限单向推送
 name: Test Push Directory to Branch with PR
 
-# 这里通过主分支的 push 触发，也可以自定义其他触发方式
+# 这里通过主分支的 push 和手动触发器触发，也可以自定义其他触发方式
 on:
   workflow_dispatch:
   push:
