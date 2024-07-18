@@ -40,40 +40,58 @@ jobs:
     name: Sync latest commits from upstream repo
 
     steps:
-    # REQUIRED step
-    # Step 1: run a standard checkout action, provided by github
-    - name: Checkout target repo
-      uses: actions/checkout@v4
-      with:
-        # optional: set the branch to checkout,
-        # sync action checks out your 'target_sync_branch' anyway
-        ref:  ${{ env.target_sync_branch }}
-        fetch-depth: 0
-        token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
-        # REQUIRED if your upstream repo is private (see wiki)
-        persist-credentials: false
+      # REQUIRED step
+      # Step 1: run a standard checkout action, provided by github
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
+          # REQUIRED if your upstream repo is private (see wiki)
+          persist-credentials: false
 
-    # REQUIRED step
-    # Step 2: run the sync action
-    - name: Sync upstream changes
-      id: sync
-      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
-      with:
-        target_sync_branch: ${{ env.target_sync_branch }}
-        target_repo_token: ${{ secrets.MY_GH_TOKEN_W }} # 可能涉及 workflows 的修改，需要对应权限
-        upstream_sync_branch: ${{ env.upstream_sync_branch }}
-        upstream_sync_repo: ${{ env.upstream_sync_repo }}
-        # Set test_mode true during manual dispatch to run tests instead of the true action!!
-        test_mode: ${{ inputs.sync_test_mode }}
+      - name: Set up Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
 
-    # Step 3: Display a sample message based on the sync output var 'has_new_commits'
-    - name: New commits found
-      if: steps.sync.outputs.has_new_commits == 'true'
-      run: echo "New commits were found to sync."
+      - name: Check if target_sync_branch exists in the remote
+        id: check-branch-exists
+        run: |
+          if git branch -r | grep origin/${{ env.target_sync_branch }}; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.target_sync_branch }} exists."
+            git checkout ${{ env.target_sync_branch }}
+            git fetch origin ${{ env.target_sync_branch }}:${{ env.target_sync_branch }}
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.target_sync_branch }} does not exist."
+            # 创建一个全新的分支，不基于任何现有的提交
+            git checkout --orphan ${{ env.target_sync_branch }}
+            git push origin ${{ env.target_sync_branch }}
+          fi
 
-    - name: No new commits
-      if: steps.sync.outputs.has_new_commits == 'false'
-      run: echo "There were no new commits."
+      # REQUIRED step
+      # Step 2: run the sync action
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_sync_branch: ${{ env.target_sync_branch }}
+          target_repo_token: ${{ secrets.MY_GH_TOKEN_W }} # 可能涉及 workflows 的修改，需要对应权限
+          upstream_sync_branch: ${{ env.upstream_sync_branch }}
+          upstream_sync_repo: ${{ env.upstream_sync_repo }}
+          # Set test_mode true during manual dispatch to run tests instead of the true action!!
+          test_mode: ${{ inputs.sync_test_mode }}
 
-    - name: Show value of 'has_new_commits'
-      run: echo ${{ steps.sync.outputs.has_new_commits }}
+      # Step 3: Display a sample message based on the sync output var 'has_new_commits'
+      - name: New commits found
+        if: steps.sync.outputs.has_new_commits == 'true'
+        run: echo "New commits were found to sync."
+
+      - name: No new commits
+        if: steps.sync.outputs.has_new_commits == 'false'
+        run: echo "There were no new commits."
+
+      - name: Show value of 'has_new_commits'
+        run: echo ${{ steps.sync.outputs.has_new_commits }}
