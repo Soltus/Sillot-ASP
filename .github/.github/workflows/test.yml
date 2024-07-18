@@ -67,16 +67,9 @@ jobs:
           else
             echo "branch_exists=false" >> $GITHUB_OUTPUT
             echo "Remote branch ${{ env.target_sync_branch }} does not exist."
-            # 清空所有文件，除了.git目录
-            find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-            # 创建一个全新的分支, 不基于任何现有的提交
-            git checkout --orphan ${{ env.target_sync_branch }}
-            git add .
-            git commit --allow-empty -m "Initial branch ${{ env.target_sync_branch }}"
             git remote add upstream https://github.com/${{ env.upstream_sync_repo }}.git
             git fetch upstream ${{ env.upstream_sync_branch }}:${{ env.upstream_sync_branch }}
-            # 使用 --allow-unrelated-histories 参数来允许合并不相关的历史
-            git merge upstream/${{ env.upstream_sync_branch }} --allow-unrelated-histories
+            git checkout -b ${{ env.target_sync_branch }} upstream/${{ env.upstream_sync_branch }}
             # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
           fi
