@@ -32,7 +32,7 @@ jobs:
       - name: Check if dist_branch exists in the remote
         id: check-branch-exists
         run: |
-          if git ls-remote --heads origin ${{ env.dist_branch }}; then
+          if git branch -r | grep origin/${{ env.dist_branch }}; then
             echo "branch_exists=true" >> $GITHUB_OUTPUT
             echo "Remote branch ${{ env.dist_branch }} exists."
           else
