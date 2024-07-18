@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Sync dist_path from main_branch to dist_branch if it exists
-        if: steps.check-branch-exists.outputs.branch_exists == 'true'
+        # if: steps.check-branch-exists.outputs.branch_exists == 'true'
         run: |
           git checkout ${{ env.main_branch }}
           cp -r ${{ env.dist_path }} /tmp/
@@ -53,26 +53,26 @@ jobs:
           git commit -m "[bot][skip actions] Sync dist_path from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
 
 
-      - name: Merge changes from main_branch into dist_branch if it does not exist
-        if: steps.check-branch-exists.outputs.branch_exists == 'false'
-        run: |
-          git checkout ${{ env.main_branch }}
-          cp -r ${{ env.dist_path }} /tmp/
-          ls -la /tmp/${{ env.dist_path }}
-          git checkout -b ${{ env.dist_branch }}
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          # 移动所有非隐藏文件和目录
-          mv /tmp/${{ env.dist_path }}/* .
-          # 移动所有隐藏文件和目录，但排除 . 和 ..
-          shopt -s dotglob nullglob
-          mv /tmp/${{ env.dist_path }}/.[!.]* .
-          shopt -u dotglob nullglob
-          # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
-          # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
-          # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
-          ls -la
-          git add .
-          git commit -m "[bot][skip actions] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
+      # - name: Merge changes from main_branch into dist_branch if it does not exist
+      #   if: steps.check-branch-exists.outputs.branch_exists == 'false'
+      #   run: |
+      #     git checkout ${{ env.main_branch }}
+      #     cp -r ${{ env.dist_path }} /tmp/
+      #     ls -la /tmp/${{ env.dist_path }}
+      #     git checkout -b ${{ env.dist_branch }}
+      #     find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+      #     # 移动所有非隐藏文件和目录
+      #     mv /tmp/${{ env.dist_path }}/* .
+      #     # 移动所有隐藏文件和目录，但排除 . 和 ..
+      #     shopt -s dotglob nullglob
+      #     mv /tmp/${{ env.dist_path }}/.[!.]* .
+      #     shopt -u dotglob nullglob
+      #     # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
+      #     # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
+      #     # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
+      #     ls -la
+      #     git add .
+      #     git commit -m "[bot][skip actions] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
 
       - name: Push changes
         id: push_changes
