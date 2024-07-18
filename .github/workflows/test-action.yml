@@ -64,7 +64,7 @@ jobs:
           # 清空临时文件夹的内容
           rm -rf $HOME/tmp/*
           cp -r ${{ env.dist_path }} $HOME/tmp/
-          ls -A $HOME/tmp/
+          ls -lAR $HOME/tmp/
           git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
           rm -rf *
@@ -83,7 +83,7 @@ jobs:
           # 清空临时文件夹的内容
           rm -rf $HOME/tmp/*
           cp -r ${{ env.cd_path }} $HOME/tmp/
-          ls -A $HOME/tmp/
+          ls -lAR $HOME/tmp/
           git fetch origin ${{ env.cd_branch }}:${{ env.cd_branch }}
           git checkout ${{ env.cd_branch }}
           rm -rf *
