@@ -41,13 +41,23 @@ jobs:
             echo "Remote branch ${{ env.dist_branch }} does not exist."
           fi
 
-      - name: Sync dist_path from main_branch to dist_branch if it exists
-        # if: steps.check-branch-exists.outputs.branch_exists == 'true'
+      - name: Sync dist_path from main_branch to exists dist_branch
+        if: steps.check-branch-exists.outputs.branch_exists == 'true'
         run: |
           git checkout ${{ env.main_branch }}
           cp -r ${{ env.dist_path }} /tmp/
           git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
+          rsync -a --exclude '.git' /tmp/${{ env.dist_path }}/* .
+          git add .
+          git commit -m "[bot][skip actions] Sync dist_path from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
+
+      - name: Sync dist_path from main_branch to not exist dist_branch
+        if: steps.check-branch-exists.outputs.branch_exists == 'false'
+        run: |
+          git checkout ${{ env.main_branch }}
+          cp -r ${{ env.dist_path }} /tmp/
+          git checkout -b ${{ env.dist_branch }}
           rsync -a --exclude '.git' /tmp/${{ env.dist_path }}/* .
           git add .
           git commit -m "[bot][skip actions] Sync dist_path from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
