@@ -67,6 +67,7 @@ jobs:
           ls -A $HOME/tmp/
           git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
+          rm -rf ./
           rsync -a --exclude '.git' $HOME/tmp/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
@@ -85,6 +86,7 @@ jobs:
           ls -A $HOME/tmp/
           git fetch origin ${{ env.cd_branch }}:${{ env.cd_branch }}
           git checkout ${{ env.cd_branch }}
+          rm -rf ./
           rsync -a --exclude '.git' $HOME/tmp/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
