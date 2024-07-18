@@ -11,9 +11,11 @@ on:
 
 # ref https://docs.github.com/zh/actions/learn-github-actions/variables
 env:
-  dist_path: ".github"
+  cd_path: "test/.github" # (Github）持续交付路径
+  cd_branch: "main_-_cd_-_test" # 不能包含 / 等字符
+  dist_path: "test" # 分发路径
   dist_branch: "main_-_dist_-_test" # 不能包含 / 等字符
-  main_branch: "main"
+  main_branch: "main" # 当前仓库（上游）主分支
 
 jobs:
   build:
@@ -31,7 +33,7 @@ jobs:
           git config --global user.email 'actions@github.com'
 
       - name: Check if dist_branch exists in the remote
-        id: check-branch-exists
+        id: dist_branch-exists
         run: |
           # grep -qE 使用了 -E 参数来启用扩展的正则表达式, 并且使用了 $ 符号来确保匹配的字符串以 main 结尾, 达到精准匹配的目的
           if git ls-remote --heads origin | grep -qE 'refs/heads/${{ env.dist_branch }}$'; then
@@ -41,9 +43,19 @@ jobs:
             echo "branch_exists=false" >> $GITHUB_OUTPUT
             echo "Remote branch ${{ env.dist_branch }} does not exist."
           fi
-
+      - name: Check if cd_branch exists in the remote
+        id: cd_branch-exists
+        run: |
+          # grep -qE 使用了 -E 参数来启用扩展的正则表达式, 并且使用了 $ 符号来确保匹配的字符串以 main 结尾, 达到精准匹配的目的
+          if git ls-remote --heads origin | grep -qE 'refs/heads/${{ env.cd_branch }}$'; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.cd_branch }} exists."
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+            echo "Remote branch ${{ env.dist_branch }} does not exist."
+          fi
       - name: Sync dist_path from main_branch to exists dist_branch
-        if: steps.check-branch-exists.outputs.branch_exists == 'true'
+        if: steps.dist_branch-exists.outputs.branch_exists == 'true'
         run: |
           git checkout ${{ env.main_branch }}
           cp -r ${{ env.dist_path }} /tmp/
@@ -52,9 +64,18 @@ jobs:
           rsync -a --exclude '.git' /tmp/${{ env.dist_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
-
+      - name: Sync cd_path from main_branch to exists cd_branch
+        if: steps.cd_branch-exists.outputs.branch_exists == 'true'
+        run: |
+          git checkout ${{ env.main_branch }}
+          cp -r ${{ env.cd_path }} /tmp/
+          git fetch origin ${{ env.cd_branch }}:${{ env.cd_branch }}
+          git checkout ${{ env.cd_branch }}
+          rsync -a --exclude '.git' /tmp/${{ env.cd_path }}/ ./
+          git add .
+          git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
       - name: Sync dist_path from main_branch to not exist dist_branch
-        if: steps.check-branch-exists.outputs.branch_exists == 'false'
+        if: steps.dist_branch-exists.outputs.branch_exists == 'false'
         run: |
           git checkout ${{ env.main_branch }}
           cp -r ${{ env.dist_path }} /tmp/
@@ -73,30 +94,27 @@ jobs:
           # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项, 以恢复默认行为。
           git add .
           git commit -m "[bot][skip actions] Initial ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}"
-
-
-      # - name: Merge changes from main_branch into dist_branch if it does not exist
-      #   if: steps.check-branch-exists.outputs.branch_exists == 'false'
-      #   run: |
-      #     git checkout ${{ env.main_branch }}
-      #     cp -r ${{ env.dist_path }} /tmp/
-      #     ls -la /tmp/${{ env.dist_path }}
-      #     git checkout -b ${{ env.dist_branch }}
-      #     find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-      #     # 移动所有非隐藏文件和目录
-      #     mv /tmp/${{ env.dist_path }}/* .
-      #     # 移动所有隐藏文件和目录，但排除 . 和 ..
-      #     shopt -s dotglob nullglob
-      #     mv /tmp/${{ env.dist_path }}/.[!.]* .
-      #     shopt -u dotglob nullglob
-      #     # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
-      #     # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
-      #     # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
-      #     ls -la
-      #     git add .
-      #     git commit -m "[bot][skip actions] Merge changes into ${{ env.dist_branch }}" || echo "No changes to commit"
-
-      - name: Push changes
+      - name: Sync cd_path from main_branch to not exist cd_branch
+        if: steps.cd_branch-exists.outputs.branch_exists == 'false'
+        run: |
+          git checkout ${{ env.main_branch }}
+          cp -r ${{ env.cd_path }} /tmp/
+          # 清空所有文件，除了.git目录
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          # 创建一个全新的分支, 不基于任何现有的提交
+          git checkout --orphan ${{ env.cd_branch }}
+          # 移动所有非隐藏文件和目录
+          mv /tmp/${{ env.cd_path }}/* .
+          # 移动所有隐藏文件和目录（例如 .github 文件夹）, 但排除 . 和 ..
+          shopt -s dotglob nullglob
+          mv /tmp/${{ env.cd_path }}/.[!.]* .
+          shopt -u dotglob nullglob
+          # shopt -s dotglob 命令将开启shell选项, 使得通配符 * 包含以点开头的文件和目录。
+          # nullglob 选项确保当没有匹配的文件时, 通配符不展开为自身。
+          # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项, 以恢复默认行为。
+          git add .
+          git commit -m "[bot][skip actions] Initial ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}"
+      - name: Push dist_branch
         id: push_changes
         uses: ad-m/github-push-action@master
         with:
@@ -105,4 +123,12 @@ jobs:
           # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
         env:
           github_token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
-
+      - name: Push cd_branch
+        id: push_changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ env.cd_branch }}
+          force: true
+          # force_with_lease: true # 仅在远程分支自上次检出以来没有其他提交的情况下成功
+        env:
+          github_token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
