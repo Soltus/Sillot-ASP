@@ -71,6 +71,7 @@ jobs:
             find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
             # 创建一个全新的分支, 不基于任何现有的提交
             git checkout --orphan ${{ env.target_sync_branch }}
+            git remote add upstream https://github.com/${{ env.upstream_sync_repo }}.git
             git fetch upstream ${{ env.upstream_sync_branch }}:${{ env.target_sync_branch }}
             git add .
             git commit --allow-empty -m "Initial fetch on orphan branch ${{ env.target_sync_branch }}"
