@@ -33,7 +33,6 @@ env:
     target_sync_branch: "main"
     upstream_sync_repo: "Soltus/Sillot-ASP"
     upstream_sync_branch: "main_-_dist_-_test"
-    GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN_W }} # 全局环境变量
 
 jobs:
   sync_latest_from_upstream:
@@ -48,7 +47,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
-          # REQUIRED if your upstream repo is private (see wiki)
+          # REQUIRED if your upstream repo is private (see wiki), 启用会造成 check-branch-exists 失败
           # persist-credentials: false
 
       - name: Set up Git
@@ -74,6 +73,7 @@ jobs:
             git commit --allow-empty -m "Initial commit on orphan branch ${{ env.target_sync_branch }}"
             # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
+            git fetch --all
           fi
 
       # REQUIRED step
