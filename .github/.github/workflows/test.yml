@@ -58,7 +58,7 @@ jobs:
       - name: Check if target_sync_branch exists in the remote
         id: check-branch-exists
         run: |
-          if git ls-remote --heads origin ${{ env.target_sync_branch }}; then
+          if git ls-remote --heads origin | grep -q 'refs/heads/${{ env.target_sync_branch }}'; then
             echo "branch_exists=true" >> $GITHUB_OUTPUT
             echo "Remote branch ${{ env.target_sync_branch }} exists."
             git checkout ${{ env.target_sync_branch }}
