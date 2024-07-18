@@ -59,10 +59,15 @@ jobs:
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.dist_path }} /tmp/dist_branch/
-          ls -A /tmp/dist_branch/${{ env.dist_path }}/
+          # 创建临时文件夹，如果它不存在的话
+          mkdir -p $HOME/tmp
+          # 清空临时文件夹的内容
+          rm -rf $HOME/tmp/*
+          cp -r ${{ env.dist_path }} $HOME/tmp/
+          ls -A $HOME/tmp/${{ env.dist_path }}/
+          git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
-          rsync -a --exclude '.git' /tmp/dist_branch/${{ env.dist_path }}/ ./
+          rsync -a --exclude '.git' $HOME/tmp/${{ env.dist_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
           # 删除临时分支
@@ -72,10 +77,15 @@ jobs:
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.cd_path }} /tmp/cd_branch/
-          ls -A /tmp/cd_branch/${{ env.cd_path }}/
+          # 创建临时文件夹，如果它不存在的话
+          mkdir -p $HOME/tmp
+          # 清空临时文件夹的内容
+          rm -rf $HOME/tmp/*
+          cp -r ${{ env.cd_path }} $HOME/tmp/
+          ls -A $HOME/tmp/${{ env.cd_path }}/
+          git fetch origin ${{ env.cd_branch }}:${{ env.cd_branch }}
           git checkout ${{ env.cd_branch }}
-          rsync -a --exclude '.git' /tmp/cd_branch/${{ env.cd_path }}/ ./
+          rsync -a --exclude '.git' $HOME/tmp/${{ env.cd_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.cd_path }} from ${{ env.main_branch }} to ${{ env.cd_branch }}" || echo "No changes to commit"
           # 删除临时分支
@@ -85,23 +95,27 @@ jobs:
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.dist_path }} /tmp/
+          # 创建临时文件夹，如果它不存在的话
+          mkdir -p $HOME/tmp
+          # 清空临时文件夹的内容
+          rm -rf $HOME/tmp/*
+          cp -r ${{ env.dist_path }} $HOME/tmp/
           # 清空所有文件，除了.git目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.dist_branch }}
           shopt -s dotglob nullglob
           # 移动所有非隐藏文件和目录
-          files=(/tmp/${{ env.dist_path }}/*)
+          files=($HOME/tmp/${{ env.dist_path }}/*)
           if [ ${#files[@]} -gt 0 ]; then
-            mv /tmp/${{ env.dist_path }}/* .
+            mv $HOME/tmp/${{ env.dist_path }}/* .
           else
             echo "No non-hidden files or directories to move."
           fi
           # 移动所有隐藏文件和目录，但排除 . 和 ..
-          hidden_files=(/tmp/${{ env.dist_path }}/.[!.]*)
+          hidden_files=($HOME/tmp/${{ env.dist_path }}/.[!.]*)
           if [ ${#hidden_files[@]} -gt 0 ]; then
-            mv /tmp/${{ env.dist_path }}/.[!.]* .
+            mv $HOME/tmp/${{ env.dist_path }}/.[!.]* .
           else
             echo "No hidden files or directories to move."
           fi
@@ -118,23 +132,27 @@ jobs:
         run: |
           # 主分支需要重复使用, 因此基于临时分支操作
           git checkout -b temp_${{ env.main_branch }} ${{ env.main_branch }}
-          cp -r ${{ env.cd_path }} /tmp/
+          # 创建临时文件夹，如果它不存在的话
+          mkdir -p $HOME/tmp
+          # 清空临时文件夹的内容
+          rm -rf $HOME/tmp/*
+          cp -r ${{ env.cd_path }} $HOME/tmp/
           # 清空所有文件，除了.git目录
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           # 创建一个全新的分支, 不基于任何现有的提交
           git checkout --orphan ${{ env.cd_branch }}
           shopt -s dotglob nullglob
           # 移动所有非隐藏文件和目录
-          files=(/tmp/${{ env.cd_path }}/*)
+          files=($HOME/tmp/${{ env.cd_path }}/*)
           if [ ${#files[@]} -gt 0 ]; then
-            mv /tmp/${{ env.cd_path }}/* .
+            mv $HOME/tmp/${{ env.cd_path }}/* .
           else
             echo "No non-hidden files or directories to move."
           fi
           # 移动所有隐藏文件和目录，但排除 . 和 ..
-          hidden_files=(/tmp/${{ env.cd_path }}/.[!.]*)
+          hidden_files=($HOME/tmp/${{ env.cd_path }}/.[!.]*)
           if [ ${#hidden_files[@]} -gt 0 ]; then
-            mv /tmp/${{ env.cd_path }}/.[!.]* .
+            mv $HOME/tmp/${{ env.cd_path }}/.[!.]* .
           else
             echo "No hidden files or directories to move."
           fi
