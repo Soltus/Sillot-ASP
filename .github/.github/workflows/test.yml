@@ -49,7 +49,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.MY_GH_TOKEN_W }} # 使用具有完全写入权限的 TOKEN（必须包含 workflows ）
           # REQUIRED if your upstream repo is private (see wiki)
-          persist-credentials: false
+          # persist-credentials: false
 
       - name: Set up Git
         run: |
