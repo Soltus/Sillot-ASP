@@ -75,7 +75,8 @@ jobs:
             git commit --allow-empty -m "Initial branch ${{ env.target_sync_branch }}"
             git remote add upstream https://github.com/${{ env.upstream_sync_repo }}.git
             git fetch upstream ${{ env.upstream_sync_branch }}:${{ env.upstream_sync_branch }}
-            git merge upstream/${{ env.upstream_sync_branch }}
+            # 使用 --allow-unrelated-histories 参数来允许合并不相关的历史
+            git merge upstream/${{ env.upstream_sync_branch }} --allow-unrelated-histories
             # 推送新分支到远程仓库
             git push origin ${{ env.target_sync_branch }}
           fi
