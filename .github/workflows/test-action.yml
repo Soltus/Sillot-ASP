@@ -48,15 +48,7 @@ jobs:
           cp -r ${{ env.dist_path }} /tmp/
           git fetch origin ${{ env.dist_branch }}:${{ env.dist_branch }}
           git checkout ${{ env.dist_branch }}
-          # 移动所有非隐藏文件和目录
-          mv /tmp/${{ env.dist_path }}/* .
-          # 移动所有隐藏文件和目录（例如 .github 文件夹），但排除 . 和 ..
-          shopt -s dotglob nullglob
-          mv /tmp/${{ env.dist_path }}/.[!.]* .
-          shopt -u dotglob nullglob
-          # shopt -s dotglob 命令将开启shell选项，使得通配符 * 包含以点开头的文件和目录。
-          # nullglob 选项确保当没有匹配的文件时，通配符不展开为自身。
-          # 之后，我们通过 shopt -u dotglob nullglob 命令关闭这些选项，以恢复默认行为。
+          rsync -a --exclude '.git' /tmp/${{ env.dist_path }}/ ./
           git add .
           git commit -m "[bot][skip actions] Sync ${{ env.dist_path }} from ${{ env.main_branch }} to ${{ env.dist_branch }}" || echo "No changes to commit"
 
